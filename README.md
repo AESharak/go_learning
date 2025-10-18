@@ -508,3 +508,213 @@ for _, card := range cards {
    cards := []string{"Ace"}
    ```
 
+---
+
+## Section 5: Custom Types and Receiver Functions
+
+### New Concepts Learned
+
+**Creating Custom Types:**
+
+Go allows you to create custom types based on existing types. This gives you the ability to create specialized functions that only work with your custom type.
+
+**Custom Type Syntax:**
+```go
+// Create a new type called 'deck' that behaves like a slice of strings
+type deck []string
+```
+
+**Key Concepts:**
+- Custom types "extend" or "borrow" all behavior from the base type
+- You can replace the base type with your custom type anywhere
+- Custom types are 100% equivalent to their base type
+- This is NOT inheritance like in object-oriented languages
+
+**Why Create Custom Types?**
+- Allows you to create specialized functions (methods) for your type
+- Makes code more readable and self-documenting
+- Enables you to attach custom behavior to your data structures
+
+### Receiver Functions (Methods)
+
+**What are Receiver Functions?**
+
+Receiver functions are special functions that "belong" to a custom type. They allow you to call functions using dot notation on variables of your custom type.
+
+**Receiver Function Syntax:**
+```go
+func (receiverVariable receiverType) functionName() {
+    // function body
+}
+```
+
+**Key Components:**
+- `(receiverVariable receiverType)` - This is the "receiver"
+- `receiverVariable` - The variable name you use inside the function
+- `receiverType` - The custom type this function belongs to
+- `functionName` - The name of the method
+
+**How It Works:**
+```go
+// Define custom type
+type deck []string
+
+// Create a method for deck type
+func (d deck) print() {
+    for i, card := range d {
+        fmt.Println(i, card)
+    }
+}
+
+// Usage in main function
+func main() {
+    cards := deck{"Ace of Diamonds", "Five of Diamonds"}
+    cards.print() // Call the method using dot notation
+}
+```
+
+### Updated Code Examples
+
+**Deck Example (`cards_demo/deck.go`)**
+```go
+package main
+
+import "fmt"
+
+// Create a new type of deck, which is a slice of strings
+// This custom type "extends" or "borrows" all the behavior of a slice of string
+type deck []string
+
+// This is a special function called a "receiver function" or "method"
+// The syntax (d deck) before the function name is called a "receiver"
+// This means the print() function belongs to the deck type
+func (d deck) print() {
+    // Loop through all cards in the deck and print each one
+    for i, card := range d {
+        fmt.Println(i, card)
+    }
+}
+```
+
+**Main Example (`cards_demo/main.go`)**
+```go
+package main
+
+func main() {
+    // Create a deck using our custom type
+    // Notice we can still use all slice operations like append()
+    cards := deck{"Ace of Diamonds", newCard()}
+    
+    // Call our custom method using dot notation
+    cards.print()
+    
+    // We can still use append() because deck is equivalent to []string
+    cards = append(cards, "Ace of Spades")
+    
+    // Call print() again to see the updated deck
+    cards.print()
+}
+
+func newCard() string {
+    return "Five of Diamonds"
+}
+```
+
+**Expected Output:**
+```
+0 Ace of Diamonds
+1 Five of Diamonds
+0 Ace of Diamonds
+1 Five of Diamonds
+2 Ace of Spades
+```
+
+### Key Learning Points
+
+1. **Custom Type Declaration**: `type name baseType` creates a new type
+2. **Receiver Functions**: `func (variable type) methodName()` creates methods
+3. **Method Calls**: Use dot notation to call methods on custom types
+4. **Type Equivalence**: Custom types are 100% equivalent to their base types
+5. **Multiple Files**: Use `go run file1.go file2.go` to run programs with multiple files
+
+### Advanced Interview Questions
+
+**15. What's the difference between a custom type and the base type it's built on?**
+- Functionally, there is NO difference - they are 100% equivalent
+- Custom types just allow you to create specialized methods
+- You can use all the same operations on both types
+
+**16. How do you create a method that belongs to a custom type?**
+```go
+func (variableName typeName) methodName() {
+    // method body
+}
+```
+
+**17. What is a receiver in Go?**
+- The `(variableName typeName)` part before the function name
+- It tells Go which type this function belongs to
+- The variable name is how you access the instance inside the method
+
+**18. Can you call methods on built-in types like int or string?**
+- No, methods can only be created for custom types
+- You cannot add methods to built-in Go types
+- This is why we create custom types like `type deck []string`
+
+**19. How do you run a Go program that has multiple .go files?**
+```bash
+go run main.go deck.go
+```
+- List all the .go files you want to include
+- Go will compile and run them together
+
+**20. What happens if you don't include all necessary .go files when running?**
+- You'll get compilation errors about undefined types or functions
+- All related .go files must be included in the same package
+
+### Best Practices Demonstrated
+
+1. **Create custom types for domain-specific concepts** (like `deck` for cards)
+2. **Use descriptive receiver variable names** (like `d` for deck)
+3. **Keep related functionality together** (methods with their types)
+4. **Use dot notation for method calls** (`cards.print()`)
+5. **Remember to include all files when running** (`go run file1.go file2.go`)
+
+### Common Pitfalls to Avoid
+
+1. **Forgetting to include all .go files when running:**
+   ```bash
+   # WRONG - will cause compilation errors
+   go run main.go
+   
+   # CORRECT - include all necessary files
+   go run main.go deck.go
+   ```
+
+2. **Using wrong receiver syntax:**
+   ```go
+   // WRONG - missing receiver variable
+   func (deck) print() { }
+   
+   // CORRECT - include receiver variable
+   func (d deck) print() { }
+   ```
+
+3. **Trying to add methods to built-in types:**
+   ```go
+   // WRONG - cannot add methods to built-in types
+   func (s string) print() { }
+   
+   // CORRECT - create custom type first
+   type myString string
+   func (s myString) print() { }
+   ```
+
+### Updated Course Progress
+
+- [x] **Section 1**: Basic Go Setup & Hello World
+- [x] **Section 2**: Variable Declaration & Assignment
+- [x] **Section 3**: Function Declaration & Return Types
+- [x] **Section 4**: Slices, Append Function, and Iteration
+- [x] **Section 5**: Custom Types and Receiver Functions
+
