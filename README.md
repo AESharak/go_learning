@@ -11,6 +11,9 @@ This repository contains my Go learning journey following Stephen Grider's Go co
   - [Main Function](#main-function)
 - [Code Examples](#code-examples)
 - [Interview Preparation Notes](#interview-preparation-notes)
+- [Section 3: Function Declaration & Return Types](#section-3-function-declaration--return-types)
+- [Updated Code Examples](#updated-code-examples)
+- [Additional Interview Questions](#additional-interview-questions)
 
 ## 📁 Project Structure
 
@@ -193,4 +196,105 @@ As I progress through the course, I add new sections here with:
 - Code examples
 - Interview questions
 - Best practices
+
+---
+
+## Section 3: Function Declaration & Return Types
+
+### New Concepts Learned
+
+**Function Declaration with Return Types:**
+
+Go requires explicit return type declaration for functions. Unlike variables where Go can infer types, functions must explicitly declare what they return.
+
+**Basic Function Syntax:**
+```go
+func functionName() returnType {
+    // function body
+    return value
+}
+```
+
+**Key Concepts:**
+- Functions must declare their return type explicitly
+- Go is very strict about type matching
+- Return type comes after the parentheses: `func name() string`
+- If no return value, omit the return type: `func name()`
+
+**Common Return Types:**
+- `string` - text data
+- `int` - whole numbers
+- `float64` - decimal numbers
+- `bool` - true/false values
+
+**Error Handling:**
+- Go's error messages are very descriptive
+- "too many arguments to return" means return type mismatch
+- Always match declared return type with actual return value
+
+**Key Interview Points:**
+- Go requires explicit return type declaration
+- Type inference works for variables, not function returns
+- Error messages help identify type mismatches
+- Functions can return any Go type
+
+## Updated Code Examples
+
+### Cards Example - Version 2 (`cards/main.go`)
+```go
+package main
+
+import "fmt"
+
+func main() {
+    // Call the newCard function and assign its return value to card
+    // Go infers that card is of type string because newCard() returns a string
+    card := newCard()
+    
+    // Print the card value to the console
+    fmt.Println(card)
+}
+
+// newCard function returns a string value
+// The "string" after the parentheses tells Go this function returns a string type
+func newCard() string {
+    // Return a string value - this must match the declared return type
+    return "Five of Diamonds"
+}
+```
+
+**Key Learning Points:**
+- Function declaration with return types
+- Type inference for variables from function calls
+- Explicit return type declaration requirement
+- Function call and assignment syntax
+- Go's strict type checking system
+
+## Additional Interview Questions
+
+**5. How do you declare a function that returns a string?**
+```go
+func functionName() string {
+    return "some string"
+}
+```
+
+**6. What happens if you don't declare a return type for a function?**
+- Go assumes the function returns nothing
+- If you try to return a value, you'll get "too many arguments to return" error
+
+**7. Can Go infer return types like it does with variables?**
+- No, Go requires explicit return type declaration
+- This is different from variable type inference with `:=`
+
+**8. What's the difference between function return types and variable type inference?**
+- Variables: Go can infer types with `:=`
+- Functions: Must explicitly declare return types
+- This ensures type safety at function boundaries
+
+## Updated Course Progress
+
+- [x] **Section 1**: Basic Go Setup & Hello World
+- [x] **Section 2**: Variable Declaration & Assignment
+- [x] **Section 3**: Function Declaration & Return Types
 

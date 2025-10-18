@@ -2,20 +2,18 @@ package main
 
 import "fmt"
 
-
-
 func main() {
-	// 	the longer syntax that is used only for documentation
-	//  var card string = "Ace of Spades"
+	// Call the newCard function and assign its return value to card
+	// Go infers that card is of type string because newCard() returns a string
+	card := newCard()
 
-	//  the alternative more short and concise and 100% similar to the above code
-	//  this valid for the initialization only
-	// 	when you reassign it to a new value, you mustn't use := anymore for the same value
-	card := "Ace of Spades"
-
-	//  reassinging
-	card = "Five of Daimonds"
-
-	// card := "Five of Diamonds" // ERROR, No new varaible declared
+	// Print the card value to the console
 	fmt.Println(card)
+}
+
+// newCard function returns a string value
+// The "string" after the parentheses tells Go this function returns a string type
+func newCard() string {
+	// Return a string value - this must match the declared return type
+	return "Five of Diamonds"
 }
