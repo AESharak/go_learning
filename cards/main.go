@@ -9,6 +9,8 @@ func main() {
 	// Iterate over the slice using 'range' keyword
 	// 'i' gets the index (0, 1, 2, etc.) and 'card' gets the actual value
 	// This is the first iteration, so we'll see the original 2 cards
+	// if a variable is declared and not used will throw a compilation error 
+	// so I must print out both i and card 
 	for i, card := range cards {
 		println("first one", i, card)
 	}
