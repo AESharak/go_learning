@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Create a new type of deck, which is a slice of strings
 // This custom type "extends" or "borrows" all the behavior of a slice of string
@@ -77,4 +80,8 @@ func deal(d deck, handSize int) (deck, deck) {
 	// d[:4] returns cards at indices 0, 1, 2, 3 (first 4 cards)
 	// d[4:] returns cards at indices 4, 5, 6, ..., 15 (remaining 12 cards)
 	return d[:handSize], d[handSize:]
+}
+
+func (d deck) toString () string {
+	return strings.Join([]string(d), ",")
 }
