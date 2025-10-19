@@ -21,7 +21,7 @@ func newDeck() deck {
 	// Define all possible card suits
 	// We use []string (not deck) because these are just suit names, not complete cards
 	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
-	
+
 	// Define all possible card values
 	// Starting with Ace, Two, Three, Four (can be extended to include more values)
 	cardValues := []string{"Ace", "Two", "Three", "Four"}
@@ -55,4 +55,26 @@ func (d deck) print() {
 	for i, card := range d {
 		fmt.Println(i, card)
 	}
+}
+
+// deal function splits a deck into two separate decks: a hand and remaining cards
+// This function demonstrates multiple return values and slice range syntax in Go
+// Parameters:
+//   - d deck: the original deck of cards to split
+//   - handSize int: number of cards to deal out into the hand
+// Returns:
+//   - deck: the hand containing the specified number of cards
+//   - deck: the remaining cards left in the deck
+// 
+// Example usage: hand, remaining := deal(cards, 5)
+// This would create a hand of 5 cards and return the rest as remaining deck
+func deal(d deck, handSize int) (deck, deck) {
+	// Use slice range syntax to split the deck into two parts:
+	// d[:handSize] - everything from start (index 0) up to handSize (not including handSize)
+	// d[handSize:] - everything from handSize index to the end of the slice
+	// 
+	// Example: if handSize = 4 and deck has 16 cards:
+	// d[:4] returns cards at indices 0, 1, 2, 3 (first 4 cards)
+	// d[4:] returns cards at indices 4, 5, 6, ..., 15 (remaining 12 cards)
+	return d[:handSize], d[handSize:]
 }

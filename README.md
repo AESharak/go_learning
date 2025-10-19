@@ -929,4 +929,305 @@ result := part1 + " " + part2 + " " + part3
 - [x] **Section 4**: Slices, Append Function, and Iteration
 - [x] **Section 5**: Custom Types and Receiver Functions
 - [x] **Section 6**: Creating Complete Deck with newDeck Function
+- [x] **Section 7**: Multiple Return Values and Slice Range Syntax
 
+---
+
+## Section 7: Multiple Return Values and Slice Range Syntax
+
+### New Concepts Learned
+
+**Multiple Return Values:**
+
+Go allows functions to return multiple values, which is different from many other programming languages. This feature is commonly used for functions that need to return both a result and an error, or in our case, to split data into multiple parts.
+
+**Multiple Return Value Syntax:**
+```go
+func functionName(param1 type1, param2 type2) (returnType1, returnType2) {
+    return value1, value2
+}
+```
+
+**Key Concepts:**
+- Functions can return multiple values separated by commas
+- Return types must be declared in parentheses: `(type1, type2)`
+- Values are returned separated by commas: `return value1, value2`
+- Callers must capture all return values or use `_` to ignore unwanted values
+
+**Slice Range Syntax:**
+
+Go provides powerful slice range syntax that allows you to select portions of a slice using index ranges. This is essential for splitting and manipulating slices.
+
+**Range Syntax Examples:**
+```go
+// Select from start to index (not including the end index)
+slice[:end]     // Everything from start to end-1
+slice[start:]   // Everything from start to the end
+slice[start:end] // Everything from start to end-1
+
+// Specific examples:
+cards[:4]   // First 4 cards (indices 0, 1, 2, 3)
+cards[4:]   // Cards from index 4 to the end
+cards[2:6]  // Cards from index 2 to 5 (4 cards total)
+```
+
+**Critical Rules:**
+- Range syntax is **inclusive** of the start index
+- Range syntax is **exclusive** of the end index
+- `slice[:n]` means "from start up to but not including n"
+- `slice[n:]` means "from n to the very end"
+
+### Updated Code Examples
+
+**Deck Example - Version 5 (`cards_demo/deck.go`)**
+```go
+package main
+
+import "fmt"
+
+// Create a new type of deck, which is a slice of strings
+// This custom type "extends" or "borrows" all the behavior of a slice of string
+// If you're coming from object-oriented programming, you can think of this as:
+// "deck type extends slice of string" or "deck is a subclass of slice of string"
+// However, Go doesn't use terms like "extends" or "subclass" - this is just for understanding
+type deck []string
+
+// newDeck creates and returns a complete deck of playing cards
+// This function does NOT have a receiver because it creates a new deck from scratch
+// You would call it like: cards := newDeck()
+// It generates all possible combinations of suits and values
+func newDeck() deck {
+	// Create an empty deck to start with
+	// deck{} creates a new slice of strings with zero length
+	cards := deck{}
+
+	// Define all possible card suits
+	// We use []string (not deck) because these are just suit names, not complete cards
+	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
+
+	// Define all possible card values
+	// Starting with Ace, Two, Three, Four (can be extended to include more values)
+	cardValues := []string{"Ace", "Two", "Three", "Four"}
+
+	// Nested loops to create every combination of suit and value
+	// First loop: iterate through each suit (Spades, Diamonds, Hearts, Clubs)
+	for _, suit := range cardSuits {
+		// Second loop: iterate through each value for the current suit
+		// This creates 4 values × 4 suits = 16 total cards
+		for _, value := range cardValues {
+			// Create a card name by combining value and suit with " of " in between
+			// Example: "Ace" + " of " + "Spades" = "Ace of Spades"
+			// We use value + " of " + suit to get natural card naming
+			cards = append(cards, value+" of "+suit)
+		}
+	}
+
+	// Return the complete deck with all 16 card combinations
+	return cards
+}
+
+// This is a special function called a "receiver function" or "method"
+// The syntax (d deck) before the function name is called a "receiver"
+// This means the print() function belongs to the deck type
+// You can think of it as: "any variable of type deck now has a print() method"
+// The 'd' is the receiver variable - it represents the instance of deck that calls this method
+// When you call cards.print(), 'd' will be equal to 'cards'
+func (d deck) print() {
+	// Loop through all cards in the deck and print each one
+	// 'i' gets the index (0, 1, 2, etc.) and 'card' gets the actual value
+	for i, card := range d {
+		fmt.Println(i, card)
+	}
+}
+
+// deal function splits a deck into two separate decks: a hand and remaining cards
+// This function demonstrates multiple return values and slice range syntax in Go
+// Parameters:
+//   - d deck: the original deck of cards to split
+//   - handSize int: number of cards to deal out into the hand
+// Returns:
+//   - deck: the hand containing the specified number of cards
+//   - deck: the remaining cards left in the deck
+// 
+// Example usage: hand, remaining := deal(cards, 5)
+// This would create a hand of 5 cards and return the rest as remaining deck
+func deal(d deck, handSize int) (deck, deck) {
+	// Use slice range syntax to split the deck into two parts:
+	// d[:handSize] - everything from start (index 0) up to handSize (not including handSize)
+	// d[handSize:] - everything from handSize index to the end of the slice
+	// 
+	// Example: if handSize = 4 and deck has 16 cards:
+	// d[:4] returns cards at indices 0, 1, 2, 3 (first 4 cards)
+	// d[4:] returns cards at indices 4, 5, 6, ..., 15 (remaining 12 cards)
+	return d[:handSize], d[handSize:]
+}
+```
+
+**Main Example - Version 5 (`cards_demo/main.go`)**
+```go
+package main
+
+func main() {
+	// Create a new deck using the newDeck function
+	// This generates all possible card combinations (16 cards total)
+	cards := newDeck()
+	
+	// Print the entire deck to see all cards
+	cards.print()
+
+	// Demonstrate the deal function - split the deck into two parts
+	// deal() returns TWO values: a hand and the remaining deck
+	// Parameters: cards (the full deck), 4 (number of cards for the hand)
+	// The syntax "hand, remainingDeck :=" captures both return values
+	// This is called "multiple assignment" in Go
+	hand, remainingDeck := deal(cards, 4)
+
+	// Print a separator line to distinguish between outputs
+	println("-----------------")
+	
+	// Print the hand (first 4 cards from the original deck)
+	// Since hand is of type deck, we can call the print() method on it
+	hand.print()
+	
+	// Print another separator line
+	println("-----------------")
+	
+	// Print the remaining deck (cards 5-16 from the original deck)
+	// remainingDeck is also of type deck, so it also has the print() method
+	remainingDeck.print()
+}
+```
+
+**Expected Output:**
+```
+0 Ace of Spades
+1 Two of Spades
+2 Three of Spades
+3 Four of Spades
+4 Ace of Diamonds
+5 Two of Diamonds
+6 Three of Diamonds
+7 Four of Diamonds
+8 Ace of Hearts
+9 Two of Hearts
+10 Three of Hearts
+11 Four of Hearts
+12 Ace of Clubs
+13 Two of Clubs
+14 Three of Clubs
+15 Four of Clubs
+-----------------
+0 Ace of Spades
+1 Two of Spades
+2 Three of Spades
+3 Four of Spades
+-----------------
+0 Ace of Diamonds
+1 Two of Diamonds
+2 Three of Diamonds
+3 Four of Diamonds
+4 Ace of Hearts
+5 Two of Hearts
+6 Three of Hearts
+7 Four of Hearts
+8 Ace of Clubs
+9 Two of Clubs
+10 Three of Clubs
+11 Four of Clubs
+```
+
+### Key Learning Points
+
+1. **Multiple Return Values**: Functions can return multiple values using `(type1, type2)` syntax
+2. **Slice Range Syntax**: Use `slice[start:end]` to select portions of slices
+3. **Range Rules**: Start index is inclusive, end index is exclusive
+4. **Multiple Assignment**: Use `var1, var2 := function()` to capture multiple return values
+5. **Function Parameters**: Functions can accept multiple parameters of different types
+
+### Advanced Interview Questions
+
+**26. How do you return multiple values from a function in Go?**
+```go
+func splitString(s string) (string, string) {
+    return s[:len(s)/2], s[len(s)/2:]
+}
+```
+
+**27. What's the difference between slice[:n] and slice[n:]?**
+- `slice[:n]` returns elements from start to index n-1 (first n elements)
+- `slice[n:]` returns elements from index n to the end (remaining elements)
+
+**28. Can you ignore some return values from a function?**
+```go
+// Yes, use underscore to ignore unwanted values
+hand, _ := deal(cards, 5)  // Ignore the remaining deck
+_, remaining := deal(cards, 5)  // Ignore the hand
+```
+
+**29. What happens if you don't capture all return values?**
+- Compilation error: "assignment mismatch: 1 variable but 2 values"
+- You must capture all return values or use `_` to ignore them
+
+**30. How do you create a function that returns three values?**
+```go
+func processData(data []int) (int, int, error) {
+    // return three values: result1, result2, error
+    return 1, 2, nil
+}
+```
+
+**31. What's the difference between slice[2:6] and slice[2:7]?**
+- `slice[2:6]` returns elements at indices 2, 3, 4, 5 (4 elements)
+- `slice[2:7]` returns elements at indices 2, 3, 4, 5, 6 (5 elements)
+
+**32. How do you get the last element of a slice?**
+```go
+lastElement := slice[len(slice)-1]  // Get last element
+```
+
+### Best Practices Demonstrated
+
+1. **Use descriptive parameter names**: `handSize` instead of `n` or `count`
+2. **Document multiple return values**: Clearly explain what each return value represents
+3. **Use slice range syntax efficiently**: Leverage Go's built-in range capabilities
+4. **Handle multiple return values properly**: Always capture or ignore all return values
+5. **Comment complex slice operations**: Explain range syntax for clarity
+
+### Common Pitfalls to Avoid
+
+1. **Forgetting to capture all return values:**
+   ```go
+   // WRONG - compilation error
+   hand := deal(cards, 5)
+   
+   // CORRECT - capture both values
+   hand, remaining := deal(cards, 5)
+   ```
+
+2. **Confusing slice range syntax:**
+   ```go
+   // WRONG - misunderstanding inclusive/exclusive
+   slice[0:5]  // Returns indices 0,1,2,3,4 (5 elements), not 0,1,2,3,4,5
+   
+   // CORRECT - understand that end is exclusive
+   slice[0:5]  // Returns indices 0,1,2,3,4 (5 elements)
+   ```
+
+3. **Using wrong parameter order:**
+   ```go
+   // WRONG - wrong parameter order
+   deal(4, cards)  // handSize first, then deck
+   
+   // CORRECT - match function signature
+   deal(cards, 4)  // deck first, then handSize
+   ```
+
+### Updated Course Progress
+
+- [x] **Section 1**: Basic Go Setup & Hello World
+- [x] **Section 2**: Variable Declaration & Assignment
+- [x] **Section 3**: Function Declaration & Return Types
+- [x] **Section 4**: Slices, Append Function, and Iteration
+- [x] **Section 5**: Custom Types and Receiver Functions
+- [x] **Section 6**: Creating Complete Deck with newDeck Function
+- [x] **Section 7**: Multiple Return Values and Slice Range Syntax

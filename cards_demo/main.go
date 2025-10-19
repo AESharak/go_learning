@@ -6,4 +6,11 @@ func main() {
 
 	cards.print()
 
+	hand, remainingDeck := deal(cards, 4)
+
+	println("-----------------")
+	hand.print()
+	println("-----------------")
+
+	remainingDeck.print()
 }
