@@ -9,6 +9,21 @@ import "fmt"
 // However, Go doesn't use terms like "extends" or "subclass" - this is just for understanding
 type deck []string
 
+func newDeck() deck {
+	cards := deck{}
+
+	cardSuits := []string{"Spades", "Diamonds", "Hearts", "Clubs"}
+	cardValues := []string{"Ace", "Two", "Three", "Four"}
+
+	for _, suit := range cardSuits {
+		for _, value := range cardValues {
+			cards = append(cards, value+" of "+suit)
+		}
+	}
+
+	return cards
+}
+
 // This is a special function called a "receiver function" or "method"
 // The syntax (d deck) before the function name is called a "receiver"
 // This means the print() function belongs to the deck type
