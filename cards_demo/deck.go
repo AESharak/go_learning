@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -82,6 +83,26 @@ func deal(d deck, handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
 }
 
-func (d deck) toString () string {
+// toString converts a deck to a comma-separated string
+// This method demonstrates type conversion and string joining
+func (d deck) toString() string {
+	// Convert deck back to []string using type conversion
+	// []string(d) tells Go to treat the deck as a slice of strings
+	// This works because deck is based on []string
 	return strings.Join([]string(d), ",")
 }
+
+// saveToFile saves a deck to a file on the hard drive
+// This method demonstrates file I/O operations and error handling
+// Parameters:
+//   - fileName string: the name of the file to save the deck to
+// Returns:
+//   - error: any error that occurred during the file writing process
+// 
+// Example usage: err := cards.saveToFile("my_deck.txt")
+func (d deck) saveToFile(fileName string) error {
+	// Convert deck to string, then to byte slice for file writing
+	// os.WriteFile requires a byte slice as the data to write
+	// 0666 permissions allow read/write for owner, group, and others
+	return os.WriteFile(fileName, []byte(d.toString()), 0666)
+}	
